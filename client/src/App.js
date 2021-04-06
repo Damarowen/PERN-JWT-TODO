@@ -15,16 +15,21 @@ import { toast } from "react-toastify";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/dashboard/Dashboard";
+import AllUsers from "./components/dashboard/AllUsers";
 import Landing from "./components/Landing";
 
 toast.configure();
 
 function App() {
+
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const checkAuthenticated = async () => {
     try {
-      const res = await fetch("http://localhost:5000/authentication/verify", {
-        method: "POST",
-        headers: { jwt_token: localStorage.token }
+      const res = await fetch("http://localhost:9000/authentication/verify", {
+        method: "GET",
+        headers: { token: localStorage.token }
       });
 
       const parseRes = await res.json();
@@ -35,15 +40,15 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    checkAuthenticated();
-  }, []);
+  useEffect( () => {
+  checkAuthenticated();
+  }, [isAuthenticated]);
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+//* create a function to change autenticated
   const setAuth = boolean => {
     setIsAuthenticated(boolean);
   };
+  
 
   return (
     <Fragment>
@@ -87,11 +92,21 @@ function App() {
               exact
               path="/dashboard"
               render={props =>
-                isAuthenticated ? (
-                  <Dashboard {...props} setAuth={setAuth} />
+                !isAuthenticated ? (
+                  <Redirect to="/" />
                 ) : (
-                  <Redirect to="/login" />
+                  <Dashboard {...props} setAuth={setAuth} />
                 )
+              }
+            />
+            <Route
+              exact
+              path="/allusers"
+              render={props =>
+                !isAuthenticated ? (
+                  <Login {...props} setAuth={setAuth} />
+                ) :
+                <AllUsers {...props} />
               }
             />
           </Switch>

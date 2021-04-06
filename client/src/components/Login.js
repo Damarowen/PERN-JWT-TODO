@@ -19,7 +19,7 @@ const Login = ({ setAuth }) => {
     try {
       const body = { email, password };
       const response = await fetch(
-        "http://localhost:5000/authentication/login",
+        "http://localhost:9000/authentication/login",
         {
           method: "POST",
           headers: {
@@ -30,9 +30,8 @@ const Login = ({ setAuth }) => {
       );
 
       const parseRes = await response.json();
-
-      if (parseRes.jwtToken) {
-        localStorage.setItem("token", parseRes.jwtToken);
+      if (parseRes.token) {
+        localStorage.setItem("token", parseRes.token);
         setAuth(true);
         toast.success("Logged in Successfully");
       } else {
@@ -51,6 +50,7 @@ const Login = ({ setAuth }) => {
         <input
           type="text"
           name="email"
+          placeholder="email"
           value={email}
           onChange={e => onChange(e)}
           className="form-control my-3"
@@ -58,6 +58,7 @@ const Login = ({ setAuth }) => {
         <input
           type="password"
           name="password"
+          placeholder="password"
           value={password}
           onChange={e => onChange(e)}
           className="form-control my-3"

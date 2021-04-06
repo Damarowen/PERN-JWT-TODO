@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from "react";
 
-const EditTodo = ({ todo, setTodosChange }) => {
-  //editText function
+const EditTodo = ({ todo }) => {
 
   const editText = async id => {
     try {
@@ -10,17 +9,14 @@ const EditTodo = ({ todo, setTodosChange }) => {
       const myHeaders = new Headers();
 
       myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("jwt_token", localStorage.token);
+      myHeaders.append("token", localStorage.token);
 
-      await fetch(`http://localhost:5000/dashboard/todos/${id}`, {
+      await fetch(`http://localhost:9000/dashboard/todos/${id}`, {
         method: "PUT",
         headers: myHeaders,
         body: JSON.stringify(body)
       });
 
-      setTodosChange(true);
-
-      // window.location = "/";
     } catch (err) {
       console.error(err.message);
     }

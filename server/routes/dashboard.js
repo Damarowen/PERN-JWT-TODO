@@ -6,13 +6,9 @@ const pool = require("../db");
 
 router.get("/", authorize, async (req, res) => {
   try {
-    // const user = await pool.query(
-    //   "SELECT user_name FROM users WHERE user_id = $1",
-    //   [req.user.id]
-    // );
 
     const user = await pool.query(
-      "SELECT u.user_name, t.todo_id, t.description FROM users AS u LEFT JOIN todos AS t ON u.user_id = t.user_id WHERE u.user_id = $1",
+      "SELECT u.user_name, t.todo_id, t.description FROM users AS u LEFT JOIN todos AS t ON u.user_id = t.user_id WHERE u.user_id = $1 ORDER BY date ASC",
       [req.user.id]
     );
 
@@ -23,11 +19,13 @@ router.get("/", authorize, async (req, res) => {
   }
 });
 
+
+
+
 //create a todo
 
 router.post("/todos", authorize, async (req, res) => {
   try {
-    console.log(req.body);
     const { description } = req.body;
     const newTodo = await pool.query(
       "INSERT INTO todos (user_id, description) VALUES ($1, $2) RETURNING *",

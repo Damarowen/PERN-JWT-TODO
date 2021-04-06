@@ -9,19 +9,17 @@ import ListTodos from "./todolist/ListTodos";
 const Dashboard = ({ setAuth }) => {
   const [name, setName] = useState("");
   const [allTodos, setAllTodos] = useState([]);
-  const [todosChange, setTodosChange] = useState(false);
 
   const getProfile = async () => {
     try {
-      const res = await fetch("http://localhost:5000/dashboard/", {
+      const res = await fetch("http://localhost:9000/dashboard/", {
         method: "GET",
-        headers: { jwt_token: localStorage.token }
+        headers: { token: localStorage.token }
       });
 
       const parseData = await res.json();
 
       setAllTodos(parseData);
-
       setName(parseData[0].user_name);
     } catch (err) {
       console.error(err.message);
@@ -41,8 +39,7 @@ const Dashboard = ({ setAuth }) => {
 
   useEffect(() => {
     getProfile();
-    setTodosChange(false);
-  }, [todosChange]);
+  }, [allTodos]);
 
   return (
     <div>
@@ -53,8 +50,8 @@ const Dashboard = ({ setAuth }) => {
         </button>
       </div>
 
-      <InputTodo setTodosChange={setTodosChange} />
-      <ListTodos allTodos={allTodos} setTodosChange={setTodosChange} />
+      <InputTodo  />
+      <ListTodos allTodos={allTodos}  />
     </div>
   );
 };

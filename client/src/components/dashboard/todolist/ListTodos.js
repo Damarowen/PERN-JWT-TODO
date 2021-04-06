@@ -1,38 +1,30 @@
 import React, { Fragment, useState, useEffect } from "react";
 import EditTodo from "./EditTodo";
 
-const ListTodos = ({ allTodos, setTodosChange }) => {
-  console.log(allTodos);
-  const [todos, setTodos] = useState([]); //empty array
+const ListTodos = ({ allTodos }) => {
 
-  //delete todo function
+  const [todos, setTodos] = useState([]); 
 
+  //*delete todo function
   async function deleteTodo(id) {
     try {
-      await fetch(`http://localhost:5000/dashboard/todos/${id}`, {
+      await fetch(`http://localhost:9000/dashboard/todos/${id}`, {
         method: "DELETE",
-        headers: { jwt_token: localStorage.token }
+        headers: { token: localStorage.token }
       });
 
-      setTodos(todos.filter(todo => todo.todo_id !== id));
+      //* no need to use filter
+      // setTodos(todos.filter(todo => todo.todo_id !== id));
     } catch (err) {
       console.error(err.message);
     }
   }
 
-  // async function getTodos() {
-  //   const res = await fetch("http://localhost:5000/todos");
-
-  //   const todoArray = await res.json();
-
-  //   setTodos(todoArray);
-  // }
 
   useEffect(() => {
     setTodos(allTodos);
   }, [allTodos]);
 
-  console.log(todos);
 
   return (
     <Fragment>
@@ -46,19 +38,12 @@ const ListTodos = ({ allTodos, setTodosChange }) => {
           </tr>
         </thead>
         <tbody>
-          {/*<tr>
-            <td>John</td>
-            <td>Doe</td>
-            <td>john@example.com</td>
-          </tr> */}
-
-          {todos.length !== 0 &&
-            todos[0].todo_id !== null &&
+          {todos.length !== 0 && todos[0].todo_id !== null &&  //* this function to check first row not null, then display data
             todos.map(todo => (
               <tr key={todo.todo_id}>
                 <td>{todo.description}</td>
                 <td>
-                  <EditTodo todo={todo} setTodosChange={setTodosChange} />
+                  <EditTodo todo={todo}  />
                 </td>
                 <td>
                   <button
