@@ -3,7 +3,7 @@ import EditTodo from "./EditTodo";
 
 const ListTodos = ({ allTodos, userId }) => {
 
-  const [todos, setTodos] = useState([]); 
+  const [todos, setTodos] = useState([]);
 
   //*delete todo function
   async function deleteTodo(id) {
@@ -25,8 +25,24 @@ const ListTodos = ({ allTodos, userId }) => {
     setTodos(allTodos);
   }, [allTodos]);
 
-  let find = todos.map(item => item.user_id.includes(userId))
-  let datafilter = find.includes(true)
+
+  //* if user just registered todos is set to null
+  //* if set to null datafileter will error because includes cannot set to null
+  //* so i decide to create function to find is todos null or not
+
+  let datafilter = isTodosNull()
+
+  function isTodosNull() {
+    for( let x of allTodos) {
+      if (x.todo_id !== null) {
+         let datafilter = x.user_id.includes(userId)
+        return datafilter
+       } 
+       return false
+    }
+  }
+
+
   let keys = Math.floor(Math.random() * 9)
 
   return (
@@ -34,18 +50,18 @@ const ListTodos = ({ allTodos, userId }) => {
       {" "}
       <table className="table mt-5">
         <thead>
-          { datafilter ? [
-             <tr key={keys}> 
-             <th>Description</th>
-             <th>Edit</th>
-             <th>Delete</th>    
-          </tr>
+          {datafilter ? [
+            <tr key={keys}>
+              <th>Description</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
           ] : [
-            <tr key={keys}> 
-            <th>Description</th>
-         </tr>
-         ]}
-       
+            <tr key={keys}>
+            <td className='text-center'>No Post Yet</td>
+            </tr>
+          ]}
+
         </thead>
         <tbody>
           {todos.length !== 0 && todos[0].todo_id !== null &&  //* this function to check first row not null, then display data
@@ -53,17 +69,17 @@ const ListTodos = ({ allTodos, userId }) => {
               <tr key={todo.todo_id}>
                 <td>{todo.description}</td>
                 {todo.user_id === userId ?
-                <td> <EditTodo todo={todo}/> </td>
-                 : null }
-                   {todo.user_id === userId ?
-                <td>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => deleteTodo(todo.todo_id)}
-                  >
-                    Delete
-                  </button>         
-                </td> : null }
+                  <td> <EditTodo todo={todo} /> </td>
+                  : null}
+                {todo.user_id === userId ?
+                  <td>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => deleteTodo(todo.todo_id)}
+                    >
+                      Delete
+                  </button>
+                  </td> : null}
               </tr>
             ))}
         </tbody>

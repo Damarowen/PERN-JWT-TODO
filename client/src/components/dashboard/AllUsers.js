@@ -38,7 +38,6 @@ const AllUsers = () => {
     };
 
 
-
     useEffect(() => {
      
         getUsers();
