@@ -65,9 +65,11 @@ router.post("/login", validInfo, async (req, res) => {
   }
 });
 
-router.get("/verify", authorize, (req, res) => {
+router.get("/verify", authorize, async (req, res) => {
   try {
-    res.json(true);
+   
+    let chunks = [true, req.user.id]
+    res.json(chunks);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
+
 
 const AllUsers = () => {
 
     const [allUsers, setAllUsers] = useState([]);
     const [name, setName] = useState("");
-    const [users, setUsers] = useState([]);
+    const [search, setSearch] = useState([]);
 
     const onSubmitForm = async e => {
         e.preventDefault();
@@ -13,7 +16,7 @@ const AllUsers = () => {
 
             const parseResponse = await response.json();
 
-            setUsers(parseResponse);
+            setSearch(parseResponse);
         } catch (err) {
             console.error(err.message);
         }
@@ -34,14 +37,21 @@ const AllUsers = () => {
         }
     };
 
+
+
     useEffect(() => {
+     
         getUsers();
-    }, []);
+      
+    }, [search]);
 
 
     function goBack() {
         window.history.back();
     }
+
+    
+    const dataFilter = allUsers.filter(x => x.user_name.toLowerCase().includes(name.toLowerCase()))
 
     return (
         <div>
@@ -70,21 +80,18 @@ const AllUsers = () => {
                 </thead>
                 <tbody>
 
-                    {users.length === 0 ?
-                        allUsers.map(todo => (
-                            <tr key={todo.todo_id}>
-                                <td>{todo.user_name}</td>
-                                <td>{todo.user_email}</td>
+                    {
+                        dataFilter.map(item => (
+                            
+                            <tr key={item.user_id}>
+                                {/* <OtherDashboard username={item.user_name}/> */}
+                               <td>  <Link to={`user/${item.user_name}`}>{item.user_name}</Link>   </td>
+                                <td>{item.user_email}</td>
 
                             </tr>
                         ))
-                        :
-                        users.map(user => (
-                            <tr key={user.user_id}>
-                                <td>{user.user_name}</td>
-                                <td>{user.user_email}</td>
-                            </tr>
-                        ))}
+                        
+                       }
                 </tbody>
             </table>
             {/* {users.length === 0 && <p>No Results Found</p>} */}

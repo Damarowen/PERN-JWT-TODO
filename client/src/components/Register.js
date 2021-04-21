@@ -9,7 +9,9 @@ const Register = ({ setAuth }) => {
     name: ""
   });
 
-  const { email, password, name } = inputs;
+  let { email, password, name } = inputs;
+
+  name = name.split(" ").join("")
 
   const onChange = e =>
     setInputs({ ...inputs, [e.target.name]: e.target.value });

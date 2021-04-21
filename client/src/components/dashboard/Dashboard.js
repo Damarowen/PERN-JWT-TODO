@@ -6,7 +6,8 @@ import { toast } from "react-toastify";
 import InputTodo from "./todolist/InputTodo";
 import ListTodos from "./todolist/ListTodos";
 
-const Dashboard = ({ setAuth }) => {
+const Dashboard = ({ setAuth , userId}) => {
+
   const [name, setName] = useState("");
   const [allTodos, setAllTodos] = useState([]);
 
@@ -51,7 +52,7 @@ const Dashboard = ({ setAuth }) => {
       </div>
 
       <InputTodo  />
-      <ListTodos allTodos={allTodos}  />
+      <ListTodos allTodos={allTodos} userId={userId} />
     </div>
   );
 };

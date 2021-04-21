@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/dashboard/Dashboard";
+import OtherDashboard from "./components/dashboard/OtherDashboard";
 import AllUsers from "./components/dashboard/AllUsers";
 import Landing from "./components/Landing";
 
@@ -24,31 +25,46 @@ function App() {
 
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userId, setUserId ] = useState('')
 
-  const checkAuthenticated = async () => {
-    try {
-      const res = await fetch("http://localhost:9000/authentication/verify", {
-        method: "GET",
-        headers: { token: localStorage.token }
-      });
 
-      const parseRes = await res.json();
+  useEffect(() => {
 
-      parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
 
-  useEffect( () => {
-  checkAuthenticated();
+    const checkAuthenticated = async () => {
+      try {
+        const res = await fetch("http://localhost:9000/authentication/verify", {
+          method: "GET",
+          headers: { token: localStorage.token }
+        });
+
+        const parseRes = await res.json();
+        const userId = parseRes[1]
+
+        if (parseRes[0] === true) {
+          setIsAuthenticated(true)
+          setUserId(userId)
+        } else {
+          setIsAuthenticated(false)
+          setUserId('')
+
+        }
+
+
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+    checkAuthenticated();
   }, [isAuthenticated]);
 
-//* create a function to change autenticated
+
+  //* create a function to change autenticated
   const setAuth = boolean => {
     setIsAuthenticated(boolean);
   };
-  
+
+
 
   return (
     <Fragment>
@@ -95,7 +111,7 @@ function App() {
                 !isAuthenticated ? (
                   <Redirect to="/" />
                 ) : (
-                  <Dashboard {...props} setAuth={setAuth} />
+                  <Dashboard {...props} userId={userId} setAuth={setAuth} />
                 )
               }
             />
@@ -106,7 +122,18 @@ function App() {
                 !isAuthenticated ? (
                   <Login {...props} setAuth={setAuth} />
                 ) :
-                <AllUsers {...props} />
+                  <AllUsers {...props} />
+              }
+            />
+            <Route
+              exact
+              path='/user/:username'
+              render={(props) =>
+                !isAuthenticated ? (
+                  <Redirect to="/" />
+                ) : (
+                  <OtherDashboard {...props} userId={userId} setAuth={setAuth} />
+                )
               }
             />
           </Switch>
